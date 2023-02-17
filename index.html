@@ -1,0 +1,60 @@
+<div id = 'app'>
+    <h1 :class = 'titleClass'>{{ message }}</h1>
+    <p>The count is: {{counter.count}}</p>
+    <button @click="addButton">add one</button>
+    <button @click="subtractButton">subtract one</button>
+    <p>Amount of todos left: {{todoCount}}</p>
+
+    <ul v-for="todo in todos" :key="todo.id">
+        <li>{{todo.text}}</li>
+    </ul>
+
+    <input v-model="textValue" type="text">
+    <p>{{ textValue }}</p>
+    <button @click="addTodo">add todo</button>
+    
+</div>
+
+<script type="module">
+    import {createApp} from 'https://unpkg.com/vue@3/dist/vue.esm-browser.js'
+
+    let id = 0;
+
+    createApp({
+        data() {
+            return {
+                message: 'Hello Vue!',
+                titleClass: 'red',
+                counter: {
+                    count: 0
+                },
+                textValue: '',
+                todos: [
+                    {id: id++, text: "do homework"},
+                    {id: id++, text: "clean room"},
+                    {id: id++, text: "walk dog"}
+                ]
+            }
+        },
+        methods: {
+            addButton() {
+                this.counter.count++;
+            },
+            subtractButton() {
+                this.counter.count--;
+            },
+            addTodo() {
+                this.todos.push({id: 0, text: this.textValue});
+            },
+            countTodos() {
+                this.todos.length(); 
+            }
+        }
+    }).mount('#app')
+</script>
+
+<style>
+    .red{
+        color: red;
+    }
+</style>
