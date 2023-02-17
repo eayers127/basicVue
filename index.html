@@ -6,12 +6,18 @@
     <p>Amount of todos left: {{todoCount}}</p>
 
     <ul v-for="todo in todos" :key="todo.id">
-        <li>{{todo.text}}</li>
+        <li>
+            {{todo.text}}
+            <button>Edit</button>
+            <button @click="deleteTodo">Delete</button>
+        </li>
     </ul>
 
     <input v-model="textValue" type="text">
     <p>{{ textValue }}</p>
     <button @click="addTodo">add todo</button>
+
+    <button @click="removeTodo">Remove last todo in list</button>
     
 </div>
 
@@ -48,6 +54,15 @@
             },
             countTodos() {
                 this.todos.length(); 
+            },
+            removeTodo() {
+                this.todos.pop({id: this.todos.id, text: this.todos.text})
+            },
+            findId() {
+                objectId = this.todos.find(this.todos.id);
+            },
+            deleteTodo() {
+                this.todos.splice(this.findId())
             }
         }
     }).mount('#app')
