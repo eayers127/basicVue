@@ -3,14 +3,13 @@
     <p>The count is: {{counter.count}}</p>
     <button @click="addButton">add one</button>
     <button @click="subtractButton">subtract one</button>
-    <p>Amount of todos left: {{todoCount}}</p>
 
     <ul v-for="todo in todos" :key="todo.id">
         <li :class = 'listClass'>
-            <input type="checkbox">
+            <input type="checkbox" @click="changeCheck(todo.id)">
             {{todo.text}}
-            <button>Edit</button>
-            <button @click="removeTodo">Remove</button>
+            <button @click="editTodo(todo.id)">Edit</button>
+            <button @click="removeTodo(todo.id)">Remove</button>
         </li>
     </ul>
 
@@ -38,13 +37,14 @@
                 },
                 textValue: '',
                 todos: [
-                    {id: id++, text: "do homework"},
-                    {id: id++, text: "clean room"},
-                    {id: id++, text: "walk dog"}
+                    {id: id++, text: "do homework", checked: false},
+                    {id: id++, text: "clean room", checked: false},
+                    {id: id++, text: "walk dog", checked: false}
                 ],
                 checkbox: {
                     accept: true
-                }
+                },
+                editedTodo: null
             }
         },
         methods: {
@@ -55,25 +55,26 @@
                 this.counter.count--;
             },
             addTodo() {
-                this.todos.push({id: 0, text: this.textValue});
-            },
-            countTodos() {
-                this.todos.length(); 
+                if(this.editedTodo === null){
+                this.todos.push({id: id++, text: this.textValue, checked: false});
+                this.textValue = '';
+                } else {
+                    this.todo[this.editedTodo].text = this.todo;
+                    this.editedTodo = null;
+                }
             },
             removeLastTodo() {
                 this.todos.pop({id: this.todos.id, text: this.todos.text})
             },
-            findId() {
-                objectId = this.todos.find(index, 1);
+            removeTodo(todoId) {
+                this.todos = this.todos.filter((todo) => todo.id !== todoId);
             },
-            deleteTodo() {
-                this.todos.splice({id: findId(objectId), text: this.todos.text})
+            editTodo(todoId) {
+                this.todo = this.todos[id].text;
+                this.editedTodo = id;
             },
-            removeTodo() {
-                this.todos.splice({id: 0, text: this.todos.text})
-            },
-            editTodo() {
-
+            changeCheck(todoId) {
+                this.todos.checked = true;
             }
         }
     }).mount('#app')
@@ -85,5 +86,8 @@
     }
     .list{
         list-style: none;
+    }
+    .completed{
+        background-color: black;
     }
 </style>
