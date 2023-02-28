@@ -1,23 +1,39 @@
 <div id = 'app'>
     <h1 :class = 'titleClass'>{{ message }}</h1>
-    <p>The count is: {{counter.count}}</p>
+    <!-- <p>The count is: {{counter.count}}</p>
     <button @click="addButton">add one</button>
-    <button @click="subtractButton">subtract one</button>
+    <button @click="subtractButton">subtract one</button> -->
 
     <ul v-for="todo in todos" :key="todo.id">
         <li :class = 'listClass'>
-            <input type="checkbox" @click="changeCheck(todo.id)">
+            <input type="checkbox" v-model="todo.completed" @change="toggleCompleted">
+            <span v-bind:class="{ completed: todo.completed }">
             {{todo.text}}
-            <button @click="editTodo(todo.id)">Edit</button>
-            <button @click="removeTodo(todo.id)">Remove</button>
+            </span>
+            <button class="list-btn"  @click="editTodo(todo.id)">Edit</button>
+            <button class="list-btn" @click="removeTodo(todo.id)">Remove</button>
         </li>
     </ul>
 
-    <input v-model="textValue" type="text">
-    <p>{{ textValue }}</p>
-    <button @click="addTodo">add todo</button>
+    <!-- <div class="todo"  :class="{ editing }">
+        <ul v-for="todo in todos" :key="todo.id">
+            <li :class = 'listClass'>
+                <input type="checkbox" v-model="todo.completed" @change="toggleCompleted">
+                <span v-if="!editing" v-bind:class="{ completed: todo.completed }">
+                <input v-if="editing" type="text" v-model="todo.text" @blur="finishEdit" @keyup.enter="finishEdit">
+                {{todo.text}}
+                </span>
+                <button class="list-btn"  @click="startEdit">Edit</button>
+                <button class="list-btn" @click="removeTodo(todo.id)">Remove</button>
+            </li>
+        </ul>
+    </div> -->
 
-    <button @click="removeLastTodo">Remove last todo in list</button>
+    <input class="input-box" v-model="textValue" type="text" placeholder="New Todo">
+    <p>{{ textValue }}</p>
+    <button class="control-btn" @click="addTodo">add todo</button>
+
+    <button class="control-btn" @click="removeLastTodo">Remove last todo in list</button>
     
 </div>
 
@@ -37,14 +53,14 @@
                 },
                 textValue: '',
                 todos: [
-                    {id: id++, text: "do homework", checked: false},
-                    {id: id++, text: "clean room", checked: false},
-                    {id: id++, text: "walk dog", checked: false}
+                    {id: id++, text: "do homework", completed: false},
+                    {id: id++, text: "clean room", completed: false},
+                    {id: id++, text: "walk dog", completed: false}
                 ],
                 checkbox: {
                     accept: true
                 },
-                editedTodo: null
+                editing: false
             }
         },
         methods: {
@@ -69,12 +85,23 @@
             removeTodo(todoId) {
                 this.todos = this.todos.filter((todo) => todo.id !== todoId);
             },
-            editTodo(todoId) {
-                this.todo = this.todos[id].text;
-                this.editedTodo = id;
+            startEdit() {
+                this.editing = true;
             },
-            changeCheck(todoId) {
-                this.todos.checked = true;
+            finishEdit() {
+                this.editing = false;
+                this.$emit('edit', this.todo);
+            },
+            editTodo(todoId) {
+                const index = this.todos.indexOf(todoId)
+                if(index !== -1) {
+                    this.todoItems.splice(index, 1, todo)
+                    todoId.focus();
+                    input
+                }
+            },
+            toggleCompleted() {
+                this.$emit('toggle-completed', this.todo);
             }
         }
     }).mount('#app')
@@ -88,6 +115,32 @@
         list-style: none;
     }
     .completed{
-        background-color: black;
+        text-decoration: line-through;
+    }
+    .list-btn{
+        background-color: orange;
+        padding: .5rem;
+        margin: .5rem;
+        border-radius: 1rem;
+    }
+    .control-btn{
+        background-color: orange;
+        padding: .5rem;
+        margin: .5rem;
+        border-radius: 1rem;
+        font-size: 1.2rem;
+    }
+    .input-box{
+        padding: .5rem;
+        margin: .5rem;
+        border-radius: 1rem;
+        font-size: 1.2rem;
+    }
+    ul{
+        width: 50%;
+        background-color: rgb(212, 212, 212);
+    }
+    li{
+        
     }
 </style>
