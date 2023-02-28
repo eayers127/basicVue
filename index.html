@@ -71,13 +71,8 @@
                 this.counter.count--;
             },
             addTodo() {
-                if(this.editedTodo === null){
                 this.todos.push({id: id++, text: this.textValue, checked: false});
                 this.textValue = '';
-                } else {
-                    this.todo[this.editedTodo].text = this.todo;
-                    this.editedTodo = null;
-                }
             },
             removeLastTodo() {
                 this.todos.pop({id: this.todos.id, text: this.todos.text})
