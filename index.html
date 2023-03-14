@@ -1,8 +1,5 @@
 <div id = 'app'>
     <h1 :class = 'titleClass'>{{ message }}</h1>
-    <!-- <p>The count is: {{counter.count}}</p>
-    <button @click="addButton">add one</button>
-    <button @click="subtractButton">subtract one</button> -->
 
     <ul v-for="todo in todos" :key="todo.id">
         <li :class = 'listClass'>
@@ -10,24 +7,11 @@
             <span v-bind:class="{ completed: todo.completed }">
             {{todo.text}}
             </span>
-            <button class="list-btn"  @click="editTodo(todo.id)">Edit</button>
+            <input v-if="editing" type="text" v-model="editText" @blur="doneEditing" @keyup.enter="doneEditing">
+            <button class="list-btn"  @click="editItem(todo.id)">{{ editing ? 'Done' : "Edit" }}</button>
             <button class="list-btn" @click="removeTodo(todo.id)">Remove</button>
         </li>
     </ul>
-
-    <!-- <div class="todo"  :class="{ editing }">
-        <ul v-for="todo in todos" :key="todo.id">
-            <li :class = 'listClass'>
-                <input type="checkbox" v-model="todo.completed" @change="toggleCompleted">
-                <span v-if="!editing" v-bind:class="{ completed: todo.completed }">
-                <input v-if="editing" type="text" v-model="todo.text" @blur="finishEdit" @keyup.enter="finishEdit">
-                {{todo.text}}
-                </span>
-                <button class="list-btn"  @click="startEdit">Edit</button>
-                <button class="list-btn" @click="removeTodo(todo.id)">Remove</button>
-            </li>
-        </ul>
-    </div> -->
 
     <input class="input-box" v-model="textValue" type="text" placeholder="New Todo">
     <p>{{ textValue }}</p>
@@ -60,7 +44,8 @@
                 checkbox: {
                     accept: true
                 },
-                editing: false
+                editing: false,
+                editText: ''
             }
         },
         methods: {
@@ -80,23 +65,30 @@
             removeTodo(todoId) {
                 this.todos = this.todos.filter((todo) => todo.id !== todoId);
             },
-            startEdit() {
-                this.editing = true;
-            },
-            finishEdit() {
-                this.editing = false;
-                this.$emit('edit', this.todo);
-            },
             editTodo(todoId) {
-                const index = this.todos.indexOf(todoId)
-                if(index !== -1) {
-                    this.todoItems.splice(index, 1, todo)
-                    todoId.focus();
-                    input
-                }
+                    todo.style.display = 'none';
+                    editInput.style.display = 'block';
+                    editInput.value = taskSpan.textContent;
+                    editButton.style.display = 'none';
+                    saveButton.style.display = 'block';
             },
             toggleCompleted() {
                 this.$emit('toggle-completed', this.todo);
+            },
+            editItem(todoId) {
+                if (this.editing) {
+                this.doneEditing()
+                } else {
+                this.editing = true
+                }
+            },
+             doneEditing() {
+                this.editing = false
+                if (this.editText.length === 0) {
+                this.$emit('delete', this.todo)
+                } else {
+                this.$emit('edit', { todo: this.todo, text: this.editText })
+                }
             }
         }
     }).mount('#app')
@@ -104,7 +96,7 @@
 
 <style>
     .red{
-        color: red;
+        color: rgb(0, 32, 160);
     }
     .list{
         list-style: none;
